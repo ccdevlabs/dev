@@ -26,11 +26,18 @@ The `setup` script installs Xcode CLT + Homebrew, clones this repo to `~/persona
 | `init` | `git submodule init/update`. |
 | `mac-update-dotfiles` | Re-sync after edits (symlinks + brew bundle). |
 
-## Adding a new tool
+## Extending
 
-1. Add to `Brewfile` (`brew "foo"` or `cask "foo"`).
-2. Put its config in `env/.config/foo/`.
-3. Run `./mac-update-dotfiles`.
+See **[GUIDE.md](GUIDE.md)** for the full philosophy, decision trees, and worked examples.
+
+Quick reference:
+
+| To add… | Put it in |
+|---|---|
+| A Homebrew package | `Brewfile` |
+| A tool with a `curl \| bash` installer | `runs/<name>` |
+| A macOS system preference | `runs/macos-defaults` |
+| A dotfile that lives in `$HOME` | `env/.<file>` or `env/.config/<tool>/…` |
 
 ## Conventions
 
