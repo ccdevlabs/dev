@@ -86,6 +86,7 @@ cask "zoom"
 
 # ── Casks: Terminal & Dev ───────────────────────────────────────────────────
 cask "ghostty"
+cask "zed"                        # lightweight GUI editor (complement to neovim)
 cask "claude"                     # Anthropic desktop
 cask "fork"                       # git GUI for the visual reviews
 cask "orbstack"                   # Docker Desktop replacement
@@ -124,7 +125,6 @@ cask "font-symbols-only-nerd-font"
 
 # ── Mac App Store ───────────────────────────────────────────────────────────
 mas "LINE", id: 539883307
-mas "Microsoft PowerPoint", id: 462062816
 mas "Tailscale", id: 1475387142
 mas "Xcode", id: 497799835
 
