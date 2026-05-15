@@ -46,6 +46,7 @@ brew "pnpm"
 brew "oven-sh/bun/bun"
 
 # ── Other languages ─────────────────────────────────────────────────────────
+brew "go"                         # required for the `go install` lines below
 brew "zig"
 # Rust:   install via `curl https://sh.rustup.rs -sSf | sh` when needed
 # Python: managed via `uv` (install with `curl -LsSf https://astral.sh/uv/install.sh | sh`)
