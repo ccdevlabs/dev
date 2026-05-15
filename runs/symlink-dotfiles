@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Symlink env/ contents to their mirror location under $HOME.
+#   env/.zshrc                → ~/.zshrc                  (file)
+#   env/.config/<tool>/       → ~/.config/<tool>          (whole directory)
+#   env/.local/<thing>/       → ~/.local/<thing>          (whole directory)
+#
+# Edits in the live ~ then flow back into the repo automatically.
+
+link() {
+    local src="$1" dest="$2"
+    if [[ -e "$dest" && ! -L "$dest" ]]; then
+        echo "  ! $dest exists and is not a symlink — backing up to $dest.backup"
+        mv "$dest" "$dest.backup"
+    fi
+    ln -sfn "$src" "$dest"
+    echo "  $dest -> $src"
+}
+
+# Top-level dotfiles
+shopt -s nullglob 2>/dev/null || true
+for f in "$DEV_ENV"/env/.*; do
+    name=$(basename "$f")
+    case "$name" in
+        .|..|.config|.local|.git|.DS_Store) continue ;;
+    esac
+    [ -f "$f" ] || continue
+    link "$f" "$HOME/$name"
+done
+
+# env/.config/<tool> → ~/.config/<tool>
+mkdir -p "$HOME/.config"
+for d in "$DEV_ENV"/env/.config/*; do
+    [ -e "$d" ] || continue
+    link "$d" "$HOME/.config/$(basename "$d")"
+done
+
+# env/.local/<thing> → ~/.local/<thing>
+mkdir -p "$HOME/.local"
+for d in "$DEV_ENV"/env/.local/*; do
+    [ -e "$d" ] || continue
+    link "$d" "$HOME/.local/$(basename "$d")"
+done

@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Dispatcher. Walks runs/ and executes each file.
+#   DEV_ENV=$(pwd) ./run            # run everything
+#   DEV_ENV=$(pwd) ./run brew       # filter by substring
+#   DEV_ENV=$(pwd) ./run --dry      # preview without executing
+
+script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+if [ -z "${DEV_ENV:-}" ]; then
+    echo "env var DEV_ENV needs to be present"
+    echo "hint: DEV_ENV=\$(pwd) ./run"
+    exit 1
+fi
+export DEV_ENV
+
+grep_filter=""
+dry_run="0"
+
+while [[ $# -gt 0 ]]; do
+    if [[ "$1" == "--dry" ]]; then
+        dry_run="1"
+    else
+        grep_filter="$1"
+    fi
+    shift
+done
+
+log() {
+    if [[ $dry_run == "1" ]]; then
+        echo "[DRY_RUN]: $1"
+    else
+        echo "$1"
+    fi
+}
+
+log "RUN: filter=\"$grep_filter\""
+
+# BSD find on macOS: `-perm -u=x` matches files where the user-execute bit is set.
+for s in $(find "$script_dir/runs" -mindepth 1 -maxdepth 1 -type f -perm -u=x | sort); do
+    if [[ -n "$grep_filter" ]] && ! basename "$s" | grep -q "$grep_filter"; then
+        log "filter \"$grep_filter\" skipped $s"
+        continue
+    fi
+    log "running: $s"
+    if [[ $dry_run == "0" ]]; then
+        "$s"
+    fi
+done

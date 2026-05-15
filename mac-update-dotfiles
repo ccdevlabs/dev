@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Re-sync after editing the repo: re-runs symlinks (picks up new files) and brew bundle.
+script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+export DEV_ENV="$script_dir"
+
+"$script_dir/runs/symlink-dotfiles"
+"$script_dir/runs/brew"
