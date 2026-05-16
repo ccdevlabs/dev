@@ -1,0 +1,39 @@
+# Shared git config — machine-agnostic.
+# Layered on top of ~/.gitconfig (which holds user.name/email and machine credentials).
+
+[core]
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true         # n/N to jump between diff sections
+    side-by-side = false    # unified diff by default; toggle with `delta --side-by-side`
+    line-numbers = true
+    syntax-theme = Everforest Dark
+    dark = true
+
+[merge]
+    conflictstyle = zdiff3  # shows the common ancestor in conflict markers
+
+[diff]
+    algorithm = histogram   # better diff for moved blocks
+    colorMoved = default
+
+[pull]
+    rebase = true
+
+[push]
+    autoSetupRemote = true  # no more --set-upstream on first push
+
+[rebase]
+    autoStash = true        # stash dirty tree before rebase, pop after
+
+[init]
+    defaultBranch = main
+
+[alias]
+    lg = log --oneline --graph --decorate --all
+    undo = reset HEAD~1 --mixed
+    aliases = config --get-regexp alias

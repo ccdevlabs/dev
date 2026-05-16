@@ -22,6 +22,18 @@ HISTSIZE=50000
 SAVEHIST=50000
 setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE
 
+# ── Tooling init ──────────────────────────────────────────────────────────
+eval "$(zoxide init zsh)"                    # z <dir> smart jump
+eval "$(fzf --zsh)"                          # Ctrl-R history, Ctrl-T file, Alt-C cd
+eval "$(fnm env --use-on-cd --shell zsh)"    # auto-switch node version per .nvmrc/.node-version
+
+# ── Aliases ───────────────────────────────────────────────────────────────
+alias ls='eza --icons --group-directories-first'
+alias ll='eza --icons --group-directories-first -lh'
+alias la='eza --icons --group-directories-first -lha'
+alias tree='eza --icons --tree'
+alias cat='bat --paging=never'
+
 # Add aliases, prompt, completion, history config here.
 # When this grows past ~50 lines, split into ~/.config/zsh/*.zsh and source them:
 #   for f in "$HOME/.config/zsh/"*.zsh; do source "$f"; done
