@@ -1,0 +1,43 @@
+gui:
+  # Compact log with initials instead of full author name
+  commitAuthorShortLength: 2
+  commitAuthorLongLength: 2
+  showAuthorIdx: false
+  # Mouse-free — keyboard only
+  mouseEvents: false
+  # Side panel width as fraction of total
+  sidePanelWidth: 0.2
+  # Show command log at the bottom (useful for learning keybinds)
+  showCommandLog: false
+  # Nerd Font icons
+  nerdFontsVersion: "3"
+  theme:
+    activeBorderColor:
+      - green
+      - bold
+    inactiveBorderColor:
+      - white
+    selectedLineBgColor:
+      - reverse
+
+git:
+  # Use delta for diffs inside lazygit (matches git-delta in .config/git/config)
+  paging:
+    colorArg: always
+    pager: delta --color-only --dark --syntax-theme="Everforest Dark"
+  # Rebase on pull (consistent with git config)
+  pull:
+    mode: rebase
+  # Show full diff for merge commits
+  merging:
+    manualCommit: false
+
+os:
+  # Open files from lazygit in Neovim
+  editPreset: nvim
+
+# Show the staging panel on the right when staging hunks (more context)
+keybinding:
+  universal:
+    quit: q
+    return: <esc>
