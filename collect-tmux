@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Run on the SOURCE machine to dump tmux config for porting to the dev repo.
+# Usage: ./collect-tmux > tmux-snapshot.txt
+set -euo pipefail
+
+hr() { echo; echo "══════════ $1 ══════════"; echo; }
+
+# ── Config file ─────────────────────────────────────────────────────────────
+for f in \
+    "$HOME/.config/tmux/tmux.conf" \
+    "$HOME/.tmux.conf"; do
+    if [[ -f "$f" ]]; then
+        hr "CONFIG FILE: $f"
+        cat "$f"
+        break
+    fi
+done
+
+# ── Plugins (TPM) ────────────────────────────────────────────────────────────
+tpm_dir="$HOME/.tmux/plugins"
+if [[ -d "$tpm_dir" ]]; then
+    hr "TPM PLUGINS ($tpm_dir)"
+    ls "$tpm_dir"
+fi
+
+# ── Live options (requires a running tmux session) ───────────────────────────
+if tmux info &>/dev/null; then
+    hr "GLOBAL OPTIONS (tmux show-options -g)"
+    tmux show-options -g
+
+    hr "GLOBAL WINDOW OPTIONS (tmux show-window-options -g)"
+    tmux show-window-options -g
+
+    hr "KEY BINDINGS (tmux list-keys)"
+    tmux list-keys
+else
+    echo "(no running tmux session — skipping live options)"
+fi

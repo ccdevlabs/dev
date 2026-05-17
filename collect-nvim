@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Run on the SOURCE machine to package nvim config for porting to the dev repo.
+# Output: ~/Desktop/nvim-config.tar.gz  (easy to find for AirDrop)
+set -euo pipefail
+
+NVIM_DIR="$HOME/.config/nvim"
+OUT="$HOME/Desktop/nvim-config.tar.gz"
+
+if [[ ! -d "$NVIM_DIR" ]]; then
+    echo "No nvim config found at $NVIM_DIR"
+    exit 1
+fi
+
+echo "── Directory structure ──────────────────────────────────────────"
+find "$NVIM_DIR" -not -path '*/\.git/*' | sort
+
+echo ""
+echo "── Packaging to $OUT ───────────────────────────────────────────"
+tar -czf "$OUT" -C "$HOME/.config" nvim
+
+echo "Done. AirDrop $OUT to the other machine."

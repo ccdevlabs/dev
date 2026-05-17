@@ -78,9 +78,45 @@ defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 65 \
 defaults write NSGlobalDomain AppleLocale -string "en_TW"
 defaults write NSGlobalDomain AppleLanguages -array "en-TW" "zh-Hant-TW" "ja-TW"
 
+# ── Mission Control / Spaces ────────────────────────────────────────────────
+# MANUAL STEP: open Mission Control (F3), click + nine times to create 9 spaces.
+# macOS has no API to create spaces programmatically.
+
+# No slide animation when switching spaces (uses instant crossfade instead).
+defaults write com.apple.universalaccess reduceMotion -bool true
+
+# Ctrl+1..9 → jump to desktop 1..9.
+# Hotkey IDs 118–126 = "Switch to Desktop N".
+# parameters = (unicodeChar, keyCode, modifierFlags); Ctrl = 262144.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 118 \
+    '{enabled = 1; value = { parameters = (49, 18, 262144); type = "standard"; }; }'
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 119 \
+    '{enabled = 1; value = { parameters = (50, 19, 262144); type = "standard"; }; }'
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 120 \
+    '{enabled = 1; value = { parameters = (51, 20, 262144); type = "standard"; }; }'
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 121 \
+    '{enabled = 1; value = { parameters = (52, 21, 262144); type = "standard"; }; }'
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 122 \
+    '{enabled = 1; value = { parameters = (53, 23, 262144); type = "standard"; }; }'
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 123 \
+    '{enabled = 1; value = { parameters = (54, 22, 262144); type = "standard"; }; }'
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 124 \
+    '{enabled = 1; value = { parameters = (55, 26, 262144); type = "standard"; }; }'
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 125 \
+    '{enabled = 1; value = { parameters = (56, 28, 262144); type = "standard"; }; }'
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 126 \
+    '{enabled = 1; value = { parameters = (57, 25, 262144); type = "standard"; }; }'
+
+# Hotkeys need a reactivate cycle to take effect (handled below by killing Dock).
+
 # ── Apply ───────────────────────────────────────────────────────────────────
 for app in "Dock" "Finder" "SystemUIServer"; do
     killall "$app" &>/dev/null || true
 done
 echo "macOS defaults applied."
 echo "Note: AppleInterfaceStyle, AppleLanguages, and AppleLocale changes take effect after logout/restart."
+echo ""
+echo "ACTION REQUIRED — create 9 Mission Control spaces manually:"
+echo "  1. Open Mission Control (F3 or three-finger swipe up)"
+echo "  2. Click the '+' button in the top-right corner 9 times"
+echo "  3. Ctrl+1 through Ctrl+9 will then jump to each desktop instantly"

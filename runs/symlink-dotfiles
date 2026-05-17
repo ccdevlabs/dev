@@ -42,3 +42,10 @@ for d in "$DEV_ENV"/env/.local/*; do
     [ -e "$d" ] || continue
     link "$d" "$HOME/.local/$(basename "$d")"
 done
+
+# env/.claude/<thing> → ~/.claude/<thing>
+mkdir -p "$HOME/.claude"
+for d in "$DEV_ENV"/env/.claude/*; do
+    [ -e "$d" ] || continue
+    link "$d" "$HOME/.claude/$(basename "$d")"
+done

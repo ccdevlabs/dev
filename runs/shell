@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+TARGET=/bin/zsh
+
+current=$(dscl . -read /Users/"$USER" UserShell | awk '{print $2}')
+[[ "$current" == "$TARGET" ]] && exit 0
+
+echo "Changing default shell to $TARGET (you'll be prompted for your password)..."
+chsh -s "$TARGET"
+echo "Default shell set to $TARGET. Re-login to take effect."

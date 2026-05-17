@@ -32,7 +32,8 @@ alias ls='eza --icons --group-directories-first'
 alias ll='eza --icons --group-directories-first -lh'
 alias la='eza --icons --group-directories-first -lha'
 alias tree='eza --icons --tree'
-alias cat='bat --paging=never'
+
+bindkey -s ^f "tmux-sessionizer\n"
 
 # Add aliases, prompt, completion, history config here.
 # When this grows past ~50 lines, split into ~/.config/zsh/*.zsh and source them:

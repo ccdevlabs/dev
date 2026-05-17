@@ -95,7 +95,6 @@ cask "ngrok"                      # tunneling
 
 # ── Casks: Input & Window management ────────────────────────────────────────
 cask "karabiner-elements"
-cask "loop"
 cask "maccy"                      # clipboard manager
 cask "mos"                        # mouse smooth-scroll
 
