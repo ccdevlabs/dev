@@ -24,7 +24,7 @@ git:
   # Use delta for diffs inside lazygit (matches git-delta in .config/git/config)
   paging:
     colorArg: always
-    pager: delta --color-only --dark --syntax-theme="Everforest Dark"
+    pager: delta --side-by-side --color-only --dark --syntax-theme="Everforest Dark"
   # Rebase on pull (consistent with git config)
   pull:
     mode: rebase
