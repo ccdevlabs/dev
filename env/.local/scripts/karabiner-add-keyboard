@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+# Add caps_lock → left_control remap for a connected keyboard in karabiner.
+# Usage: karabiner-add-keyboard
+#
+# Enumerates HID keyboards via ioreg, lets you pick one with fzf,
+# then patches ~/.config/karabiner/karabiner.json. Karabiner auto-reloads.
+
+set -euo pipefail
+
+KARABINER_JSON="$HOME/.config/karabiner/karabiner.json"
+
+if [[ ! -f "$KARABINER_JSON" ]]; then
+  echo "error: $KARABINER_JSON not found" >&2
+  exit 1
+fi
+
+# ── Enumerate HID keyboards (usage page 1, usage 6) via ioreg ──────────────
+keyboards=$(python3 - <<'PY'
+import subprocess, plistlib
+
+out = subprocess.run(['ioreg', '-r', '-c', 'IOHIDInterface', '-a'], capture_output=True)
+data = plistlib.loads(out.stdout)
+seen = set()
+
+def walk(node):
+    if isinstance(node, dict):
+        vid = node.get('VendorID')
+        pid = node.get('ProductID')
+        name = node.get('Product') or node.get('IOName') or ''
+        if vid and pid and node.get('PrimaryUsagePage') == 1 and node.get('PrimaryUsage') == 6:
+            key = (vid, pid)
+            if key not in seen:
+                seen.add(key)
+                print(f"{name or 'Unknown device'}\t{vid}\t{pid}")
+        for v in node.values():
+            walk(v)
+    elif isinstance(node, list):
+        for item in node:
+            walk(item)
+
+walk(data)
+PY
+)
+
+if [[ -z "$keyboards" ]]; then
+  echo "No keyboards detected." >&2
+  exit 1
+fi
+
+# ── Pick a keyboard ────────────────────────────────────────────────────────
+selected=$(echo "$keyboards" \
+  | fzf --prompt="Keyboard to add caps_lock→ctrl: " \
+        --with-nth=1 --delimiter=$'\t' \
+        --height=40% --border) \
+  || { echo "Aborted."; exit 0; }
+
+name=$(echo "$selected"     | cut -f1)
+vendor_id=$(echo "$selected" | cut -f2)
+product_id=$(echo "$selected" | cut -f3)
+
+echo "Selected: $name  (vendor=$vendor_id  product=$product_id)"
+
+# ── Check if remap already exists for this device ─────────────────────────
+already=$(jq --argjson vid "$vendor_id" --argjson pid "$product_id" '
+  [.profiles[0].devices[]?
+   | select(.identifiers.vendor_id == $vid and .identifiers.product_id == $pid)
+   | .simple_modifications[]?
+   | select(.from.key_code == "caps_lock")]
+  | length
+' "$KARABINER_JSON")
+
+if [[ "$already" -gt 0 ]]; then
+  echo "caps_lock remap already configured for this device — nothing to do."
+  exit 0
+fi
+
+# ── Patch karabiner.json ───────────────────────────────────────────────────
+tmp=$(mktemp)
+jq --argjson vid "$vendor_id" --argjson pid "$product_id" '
+  def remap: {"from":{"key_code":"caps_lock"},"to":[{"key_code":"left_control"}]};
+  def has_device: [.profiles[0].devices[]?
+    | select(.identifiers.vendor_id == $vid and .identifiers.product_id == $pid)]
+    | length > 0;
+
+  if has_device then
+    .profiles[0].devices |= map(
+      if (.identifiers.vendor_id == $vid and .identifiers.product_id == $pid)
+      then .simple_modifications += [remap]
+      else . end)
+  else
+    .profiles[0].devices += [{
+      "identifiers": {
+        "is_keyboard": true,
+        "product_id": $pid,
+        "vendor_id": $vid
+      },
+      "simple_modifications": [remap]
+    }]
+  end
+' "$KARABINER_JSON" > "$tmp" && mv "$tmp" "$KARABINER_JSON"
+
+echo "Done — karabiner will reload automatically."
