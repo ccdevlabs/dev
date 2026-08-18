@@ -99,4 +99,4 @@ jq --argjson vid "$vendor_id" --argjson pid "$product_id" '
   end
 ' "$KARABINER_JSON" > "$tmp" && mv "$tmp" "$KARABINER_JSON"
 
-echo "Done — karabiner will reload automatically."
+echo "Done — restart Karabiner-Elements to apply the new device config."

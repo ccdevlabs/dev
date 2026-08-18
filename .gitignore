@@ -1,1 +1,4 @@
 .DS_Store
+
+# Karabiner writes timestamped auto-backups; not worth versioning
+env/.config/karabiner/automatic_backups/
