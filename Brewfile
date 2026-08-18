@@ -37,6 +37,7 @@ brew "zsh-syntax-highlighting"
 brew "git"
 brew "gh"
 brew "git-delta"                  # nicer diff renderer
+brew "hunk"                        # review-first terminal diff viewer
 brew "lazygit"
 
 # ── Editor ──────────────────────────────────────────────────────────────────
