@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Install latest stable Node via fnm. Idempotent.
+eval "$(fnm env)"
+
+fnm install --lts
+fnm use lts-latest
+fnm default lts-latest

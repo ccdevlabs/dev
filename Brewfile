@@ -24,6 +24,8 @@ brew "eza"                        # modern ls (covers tree via --tree)
 brew "fd"                         # modern find
 brew "ripgrep"
 brew "jq"
+brew "yq"                        # YAML processor (complement to jq)
+brew "mkcert"                    # local trusted HTTPS certs
 brew "tlrc"                       # tldr client
 
 # ── Zsh ─────────────────────────────────────────────────────────────────────
@@ -48,8 +50,8 @@ brew "oven-sh/bun/bun"
 # ── Other languages ─────────────────────────────────────────────────────────
 brew "go"                         # required for the `go install` lines below
 brew "zig"
-# Rust:   install via `curl https://sh.rustup.rs -sSf | sh` when needed
-# Python: managed via `uv` (install with `curl -LsSf https://astral.sh/uv/install.sh | sh`)
+# Rust:   managed via rustup (runs/rust)
+brew "uv"                         # Python package/runtime manager (runs/python)
 # JVM:    install ad-hoc per project, not pinned here
 
 # ── Cloud / infra ───────────────────────────────────────────────────────────
